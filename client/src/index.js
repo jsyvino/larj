@@ -3,10 +3,8 @@ import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
 import { BrowserRouter } from 'react-router-dom';
 import store from './store/index'
-import App from './app'
+import App from './App'
 
-// establishes socket connection
-import './socket'
 
 ReactDOM.render(
   <Provider store={store}>

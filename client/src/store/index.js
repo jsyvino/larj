@@ -3,11 +3,11 @@ import createLogger from 'redux-logger'
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import causes from './causes'
-import users from './users'
+import user from './user'
 
 const reducer = combineReducers({
   causes,
-  users,
+  user,
 })
 
 const middleware = composeWithDevTools(applyMiddleware(
@@ -18,4 +18,4 @@ const store = createStore(reducer, middleware)
 
 export default store
 export * from './causes'
-export * from './users'
+export * from './user'

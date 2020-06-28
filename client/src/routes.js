@@ -1,109 +1,21 @@
-
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { withRouter, Route, Switch } from 'react-router-dom'
-import PropTypes from 'prop-types'
+import { Route, Switch } from 'react-router-dom'
 
 import {
-  Login,
-  Signup,
-  UserHome,
-  AllProductsHome,
-  AddProduct,
-  OrderView,
-  UserReviews,
-  AllUsers,
-  AllCategories,
-  ShoppingCart,
-  SingleProduct,
-  Checkout,
-  OrderPreview,
-  Confirmation,
-  CategorySelected
+  Causes,
+  CauseDetail,
+} from './components'
 
-}
-  from './components'
 
-import { me, fetchCartProducts, fetchProducts, fetchCategories } from './store'
-
-class Routes extends Component {
-  componentDidMount() {
-    this.props.loadInitialData();
-    this.props.loadMe();
-  }
-
+export default class Routes extends Component {
 
   render() {
-    const { isLoggedIn } = this.props
     return (
       <Switch>
-        {
-          isLoggedIn &&
-            <Switch>
-              <Route path="/orders/" component={OrderView} />
-              <Route path="/orders/:category" component={OrderView} />
-              <Route exact path="/admin/users" component={AllUsers} />
-              <Route exact path="/admin/products/add" component={AddProduct} />
-              <Route exact path="/products/:id/edit" render={() => <SingleProduct edit={true} /> } />
-              <Route exact path="/products/:id" component={SingleProduct} />
-              <Route path="/admin/categories" component={AllCategories} />
-              <Route exact path="/categories/:id" component={CategorySelected} />
-              <Route path="/users/reviews" component={UserReviews} />
-              <Route path="/cart" component={ShoppingCart} />
-              <Route path="/checkout" component={Checkout} />
-              <Route path="/orderPreview" component={OrderPreview} />
-              <Route path="/confirmation" component={Confirmation} />
-              <Route exact path="/" component={AllProductsHome} />
-            </Switch>
-        }
-        <Route exact path="/login" component={Login} />
-        <Route path="/signup" component={Signup} />
-        <Route path="/cart" component={ShoppingCart} />
-        <Route path="/checkout" component={Checkout} />
-        <Route path="/orderPreview" component={OrderPreview} />
-        <Route path="/confirmation" component={Confirmation} />
-        <Route exact path="/products/:id" component={SingleProduct} />
-        <Route exact path="/categories/:id" component={CategorySelected} />
-        <Route exact path="/" component={AllProductsHome} />
-        {/* Displays our Login component as a fallback */}
+        <Route path="/causes/" component={Causes} />
+        <Route path="/causes/:id" component={CauseDetail} />
+        <Route exact path="/" component={Causes} />
       </Switch>
     )
   }
-}
-
-/**
- * CONTAINER
- */
-const mapState = (state) => {
-  return {
-    // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
-    // Otherwise, state.user will be an empty object, and state.user.id will be falsey
-    isLoggedIn: !!state.user.id
-  }
-}
-
-const mapDispatch = (dispatch) => {
-  return {
-    loadInitialData() {
-      // dispatch(fetchOrders());
-      dispatch(fetchCartProducts());
-      dispatch(fetchProducts())
-      dispatch(fetchCategories());
-    },
-    loadMe() {
-      dispatch(me());
-    }
-  }
-}
-
-// The `withRouter` wrapper makes sure that updates are not blocked
-// when the url changes
-export default withRouter(connect(mapState, mapDispatch)(Routes))
-
-/**
- * PROP TYPES
- */
-Routes.propTypes = {
-  loadInitialData: PropTypes.func.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired
 }
