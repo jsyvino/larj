@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { fetchCauses } from './store/causes'
@@ -23,7 +23,7 @@ export class Routes extends Component {
             {
                 true && //name && location &&
                 <Switch>
-                    <Route path="/causes/" component={Causes} />
+                    <Route exact path="/causes/" component={Causes} />
                     <Route path="/causes/:id" component={CauseDetail} />
                     <Route exact path="/" component={Causes} />
                 </Switch>
@@ -48,4 +48,4 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Routes)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Routes))

@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classnames from 'classnames'
-import DataTable from 'react-data-table-component'
 import { throttle } from 'lodash'
 
 import { CauseItem } from './'
-import { fetchCauseById } from '../store/causes'
 
 import './Causes.css'
 
@@ -22,6 +20,7 @@ export class Causes extends Component {
     filterCausesBySearch = throttle(() => {
         const { filterText: f } = this.state
         const { causes: {causeList} } = this.props
+        if (!f.length) return causeList
         return causeList.filter(c => {
             const causeText = `${c.subject} ${c.body_text} ${c.description || ""}`
             return causeText.toLowerCase().indexOf(f) >= 0
@@ -30,10 +29,11 @@ export class Causes extends Component {
 
     sortUsers = causes => {
         const { filterText: f } = this.state
-        causes = this.filterCausesBySearch()
+        const { causes: {causeList} } = this.props
+        const filteredCauses = f.length ? this.filterCausesBySearch() : causeList
         const sortBy = this.state.sortCausesBy
         if(!sortBy) return
-        const sortedCauses = causes.concat().sort((cause1, cause2) => {
+        const sortedCauses = filteredCauses.concat().sort((cause1, cause2) => {
             const sortField = sortBy.field
             return cause1[sortField] < cause2[sortField] ? -1 : 1
         })
@@ -55,7 +55,7 @@ export class Causes extends Component {
         return (
           <span
             className={classnames(
-              ['sortable-column-header', 'row-container', 'align-center', `small-${width}`],
+              ['sortable-column-header', 'center', `small-${width}`],
               { 'is-selected-sort': selectedSort }
             )}
             onClick={() =>
@@ -84,20 +84,19 @@ export class Causes extends Component {
         const { causes: {causeList} } = this.props
 
         return (
-          <section>
+          <section className="all-causes">
             <header className="table-headers">
-              <span className="small-3">Subject</span>
-              {this.renderSortableColumnName('Victim', 'victim_name', 'sortCausesBy', ' cell auto')}{' '}
-              {this.renderSortableColumnName('City', 'city', 'sortCausesBy', ' cell auto')}{' '}
-              {this.renderSortableColumnName('State', 'state', 'sortCausesBy', ' cell auto')}{' '}
-              <span className="small-3">Email Body</span>
-              <span className="small-3">Additional Info</span>
-              {this.renderSortableColumnName('Added', 'created', 'sortCausesBy', ' cell auto')}{' '}
+              <span className="small-1">Email</span>
+              <span className="small-2 center">Subject</span>
+              {this.renderSortableColumnName('Victim', 'victim_name', 'sortCausesBy', 1)}
+              {this.renderSortableColumnName('State', 'state', 'sortCausesBy', 1)}
+              <span className="small-4 center">Email Body</span>
+              {this.renderSortableColumnName('Added', 'created', 'sortCausesBy', 1)}
               {/* is kind of hacky but gives the correct class to email */}
             </header>
             <ul>
                 {
-                    causeList.map(causeItem =>
+                    this.sortUsers(causeList).map(causeItem =>
                     <li key={`causeItem ${causeItem.id}`}>
                         <CauseItem cause={causeItem} />
                     </li>
@@ -110,51 +109,6 @@ export class Causes extends Component {
 
     render() {
         const { causes: {causeList} } = this.props
-        console.log({causeList})
-        const columns = [
-            {
-                name: 'Subject',
-                selector: 'subject',
-                sortable: true,
-                maxWidth: "200px",
-            },
-            {
-                name: 'Victim',
-                selector: 'victim_name',
-                sortable: true,
-                maxWidth: "150px",
-            },
-            {
-                name: 'City',
-                selector: 'city',
-                sortable: true,
-                maxWidth: "100px",
-            },
-            {
-                name: 'State',
-                selector: 'state',
-                sortable: true,
-                maxWidth: "100px",
-            },
-            {
-                name: 'Email Body',
-                selector: 'body_text',
-                sortable: false,
-                maxWidth: "300px",
-                wrap: true,
-                style: {
-                    'max-height': '300px',
-                    overflow: 'hidden'
-                }
-            },
-            {
-                name: 'Additional Information',
-                selector: 'description',
-                sortable: false,
-                maxWidth: "300px",
-                wrap: true,
-            },
-        ]
       return (
           <div className="casues-page">
             <h2>Take Action and Support These Causes</h2>
@@ -162,24 +116,6 @@ export class Causes extends Component {
                 Review the below causes and if any of them resonante with you, TAKE ACTION and send an email demanding justice.  You are encouraged to edit the body of the email to add your specific opinion about the situation, custom emails are always more impactful; however, if time does not allow, sending a templated email is better than nothing at all!
             </p>
             {this.renderCauses()}
-
-            {/* <DataTable
-                title="Available Emails"
-                columns={columns}
-                data={causeList}
-                striped={true}
-                highlightOnHover={true}
-                responsive={true}
-            /> */}
-            {/* <ul>
-                {
-                    causeList.map(causeItem =>
-                    <li key={`causeItem ${causeItem.id}`}>
-                        <CauseItem cause={causeItem} />
-                    </li>
-                )
-                }
-            </ul> */}
           </div>
       )
     }
@@ -193,12 +129,4 @@ export class Causes extends Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-      getCausebyId: (id) => {
-        dispatch(fetchCauseById(id))
-      },
-    }
-  }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Causes)
+export default connect(mapStateToProps)(Causes)

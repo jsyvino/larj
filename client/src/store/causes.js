@@ -43,7 +43,7 @@ export const fetchCauseById = (id) => {
       },
       credentials: 'same-origin',
     })
-    .then(res => res.data)
+    .then(res => res.json())
     .then(cause => {
         dispatch(getCause(cause))
     })
@@ -60,9 +60,7 @@ export function fetchCauses() {
       },
       credentials: 'same-origin',
     })
-    .then(res =>  {
-      return res.json()
-    })
+    .then(res => res.json())
     .then(causes => {
       dispatch(getCauses(causes))
     })
@@ -81,9 +79,14 @@ export default function reducer(state = defaultCauses, action) {
         causeList: action.payload || state.causeList
       }
     case GET_CAUSE:
+      const cause = action.payload
+      const transformedCause = {
+        ...cause,
+        recipient: cause.recipient.map(r => r.email_address),
+      }
       return {
         ...state,
-        currentCause: action.payload || state.currentCause
+        currentCause: transformedCause || state.currentCause
       }
     default:
       return state;

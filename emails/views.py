@@ -1,9 +1,19 @@
 from rest_framework import viewsets, serializers, response
 from django.http import Http404
-from emails.models import EmailMetadata, Sent
+from emails.models import EmailMetadata, Sent, EmailAddress
 
 
 class CauseSerializer(serializers.ModelSerializer):
+
+    recipient = serializers.SerializerMethodField()
+
+    def get_recipient(self, email_metadata):
+        recipient_queryset = email_metadata.recipient
+        if recipient_queryset is not None:
+            return EmailAddressSerializer(recipient_queryset, many=True).data
+        else:
+            return []
+
     class Meta:
         model = EmailMetadata
         fields = (
@@ -82,3 +92,16 @@ class SentListViewSet(viewsets.ModelViewSet):
         except EmailMetadata.DoesNotExist:
             raise Http404
 
+
+class EmailAddressSerializer(serializers.ModelSerializer):
+    """
+    Designed to be nested within a questions's endpoint, this gives enough
+    information about each response to inform filtering
+    """
+    email_address = serializers.ReadOnlyField()
+
+    class Meta:
+        model = EmailAddress
+        fields = (
+            'email_address',
+        )
