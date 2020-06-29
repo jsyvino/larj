@@ -29,7 +29,6 @@ export class Login extends Component {
 
     render() {
         const { nameField, locationField } = this.state
-        console.log("inside render login ", this.props)
         return (
             <form className="login-form">
                 <label htmlFor="nameField">Name</label>
@@ -56,7 +55,6 @@ export class Login extends Component {
 
 
   const mapStateToProps = (state, ownProps) => {
-      console.log("map state login ", state)
         return {
         user: state.user,
         }

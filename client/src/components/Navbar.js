@@ -6,7 +6,7 @@ export default function Navbar(props) {
   return (
     <nav>
       <Link to="/causes" >
-        <button className="navLink" >Home</button>
+        <button className="navLink" >Cause List</button>
       </Link>
       <h1>Email Action Database</h1>
       {/* <div className="links">

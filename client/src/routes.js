@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 
+import { fetchCauses } from './store/causes'
+
 import {
   Causes,
   CauseDetail,
@@ -10,9 +12,12 @@ import {
 
 
 export class Routes extends Component {
+    componentDidMount() {
+        this.props.getCauseList()
+    }
 
-  render() {
-      const { causeList, user: { name, location} } = this.props
+    render() {
+        const { user: { name, location} } = this.props
     return (
         <Switch>
             {
@@ -26,14 +31,21 @@ export class Routes extends Component {
             <Route path="/" component={Login} />
         </Switch>
     )
-  }
+    }
 }
 
 const mapStateToProps = (state) => {
     return {
-        causeList: state.causes.causeList,
         user: state.user,
     }
 }
 
-export default connect(mapStateToProps)(Routes)
+const mapDispatchToProps = (dispatch) => {
+    return {
+      getCauseList: () => {
+        dispatch(fetchCauses())
+      },
+    }
+  }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Routes)

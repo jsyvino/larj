@@ -1,8 +1,7 @@
 
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
-import { Navbar, Login } from './components'
+import { Navbar } from './components'
 import Routes from './routes'
 
 
