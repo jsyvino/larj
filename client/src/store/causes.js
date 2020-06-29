@@ -41,7 +41,7 @@ export const fetchCauseById = (id) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      mode: 'no-cors',
+      credentials: 'same-origin',
     })
     .then(res => res.data)
     .then(cause => {
@@ -58,9 +58,11 @@ export function fetchCauses() {
       headers: {
         'Content-Type': 'application/json',
       },
-      mode: 'no-cors',
+      credentials: 'same-origin',
     })
-    .then(res => res.data)
+    .then(res =>  {
+      return res.json()
+    })
     .then(causes => {
       dispatch(getCauses(causes))
     })
@@ -76,12 +78,12 @@ export default function reducer(state = defaultCauses, action) {
     case GET_CAUSES:
       return {
         ...state,
-        causeList: action.payload
+        causeList: action.payload || state.causeList
       }
     case GET_CAUSE:
       return {
         ...state,
-        currentCause: action.payload
+        currentCause: action.payload || state.currentCause
       }
     default:
       return state;

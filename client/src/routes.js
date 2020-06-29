@@ -17,11 +17,11 @@ export class Routes extends Component {
     }
 
     render() {
-        const { user: { name, location} } = this.props
+        // const { user: { name, location} } = this.props
     return (
         <Switch>
             {
-                name && location &&
+                true && //name && location &&
                 <Switch>
                     <Route path="/causes/" component={Causes} />
                     <Route path="/causes/:id" component={CauseDetail} />
