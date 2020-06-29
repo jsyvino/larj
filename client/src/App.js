@@ -1,17 +1,19 @@
 
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import {Navbar} from './components'
+import { Navbar, Login } from './components'
 import Routes from './routes'
 
 
-const App = () => {
-  return (
-    <div>
-      <Navbar />
-      <Routes />
-    </div>
-  )
-}
+export default class App extends Component {
 
-export default App
+  render() {
+    return (
+      <div>
+        <Navbar />
+        <Routes />
+      </div>
+    )
+  }
+}

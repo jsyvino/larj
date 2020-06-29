@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
 
-export function Navbar(props) {
+export default function Navbar(props) {
 
   return (
     <nav>
@@ -16,14 +15,5 @@ export function Navbar(props) {
         <Link to="/daycares/map" >Map</Link>
       </div> */}
     </nav>
-  );
+  )
 }
-
-
-const mapState = (state, ownProps) => {
-  return {
-    user: state.user,
-  }
-}
-
-export default connect(mapState)(Navbar)
