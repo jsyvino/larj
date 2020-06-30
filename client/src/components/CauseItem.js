@@ -11,7 +11,7 @@ import './Causes.css'
 export  class CauseItem extends Component {
 
     handleClickItem = () => {
-        const { cause, history } = this.props
+        const { cause, history, resetCurrentCause } = this.props
         history.push(`/causes/${cause.id}`)
     }
 
@@ -60,10 +60,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         recordSentEmail: (name, cause) => {
-        dispatch(recordEmail(name, cause))
-      },
+            dispatch(recordEmail(name, cause))
+        },
     }
-  }
+}
 
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CauseItem))

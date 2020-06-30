@@ -24,7 +24,7 @@ export class CauseDetail extends Component{
 
     render() {
       const { causes: {currentCause}, user } = this.props
-      if (!currentCause) return null
+      if (!currentCause || !currentCause.subject) return null
       const {toField, subject, fullBody} = composeEmail(currentCause.recipient, currentCause.subject, currentCause.body_text, user)
       const locationText = this.getLocationText(currentCause.city, currentCause.state)
       return (

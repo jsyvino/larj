@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import classnames from 'classnames'
 import { throttle } from 'lodash'
 
+import { clearCurrentCause } from '../store/causes'
 import { CauseItem } from './'
 
 import './Causes.css'
@@ -16,6 +17,10 @@ export class Causes extends Component {
           filterText: '',
           sortCausesBy: { field: 'created', ascending: true },
         }
+    }
+
+    componentDidMount() {
+      this.props.resetCurrentCause()
     }
 
     filterCausesBySearch = throttle(() => {
@@ -145,11 +150,19 @@ export class Causes extends Component {
   }
 
 
-  const mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
     return {
         causes: state.causes,
         emails: state.emails,
     }
 }
 
-export default connect(mapStateToProps)(Causes)
+const mapDispatchToProps = (dispatch) => {
+  return {
+      resetCurrentCause: () => {
+        dispatch(clearCurrentCause())
+      },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Causes)

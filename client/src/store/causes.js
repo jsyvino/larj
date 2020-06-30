@@ -12,6 +12,7 @@ const defaultCauses = {
  */
 const GET_CAUSES = 'GET_CAUSES'
 const GET_CAUSE = 'GET_CAUSE'
+const CLEAR_CURRENT_CAUSE = 'CLEAR_CURRENT_CAUSE'
 
 /**
  * ACTION CREATORS
@@ -24,11 +25,18 @@ export const getCauses = function (causeList) {
 }
 
 export const getCause = function (cause) {
-    return {
-      type: GET_CAUSE,
-      payload: cause
-    }
+  return {
+    type: GET_CAUSE,
+    payload: cause
   }
+}
+
+export const clearCause = function () {
+  return {
+    type: CLEAR_CURRENT_CAUSE,
+
+  }
+}
 
 /**
  * THUNK CREATORS
@@ -68,6 +76,12 @@ export function fetchCauses() {
   }
 }
 
+export function clearCurrentCause() {
+  return function thunk(dispatch) {
+    return dispatch(clearCause())
+  }
+}
+
 /**
  * REDUCER
  */
@@ -93,6 +107,11 @@ export default function reducer(state = defaultCauses, action) {
         ...state,
         currentCause: transformedCause || state.currentCause
       }
+      case CLEAR_CURRENT_CAUSE:
+          return {
+            ...state,
+            currentCause: {}
+          }
     default:
       return state;
   }
