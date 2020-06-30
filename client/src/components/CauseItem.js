@@ -20,19 +20,25 @@ export  class CauseItem extends Component {
         sendEmail(user.name, cause.id)
     }
 
+    renderBasicCell = (text, width) => {
+        return (
+            <p className={`small-${width} cause-cell`} title="Click For More Information" onClick={this.handleClickItem}>{text}</p>
+        )
+    }
+
     render() {
         const { cause } = this.props
       return (
           <div className="casues-page">
             <div className="item-container">
-                <div className="small-1">
+                <div className="small-1" title="Take Action!">
                     <input className="button-outline cause-cell" type="submit" value="Email" onClick={this.handleSubmit}/>
                 </div>
-                <p className="small-2 cause-cell" onClick={this.handleClickItem}>{cause.subject}</p>
-                <p className="small-1 cause-cell" onClick={this.handleClickItem}>{cause.victim_name || ""}</p>
-                <p className="small-1 cause-cell" onClick={this.handleClickItem}>{cause.state || ""}</p>
-                <p className="small-4 cause-cell" onClick={this.handleClickItem}>{cause.body_text || ""}</p>
-                <p className="small-1 cause-cell" onClick={this.handleClickItem}>{moment(cause.created).format('MM/DD/YYYY')}</p>
+                {this.renderBasicCell(cause.subject, 2)}
+                {this.renderBasicCell(cause.victim_name || "", 1)}
+                {this.renderBasicCell(cause.state || "", 1)}
+                {this.renderBasicCell(cause.body_text || "", 4)}
+                {this.renderBasicCell(moment(cause.created).format('MM/DD/YYYY'), 1)}
             </div>
           </div>
       )
