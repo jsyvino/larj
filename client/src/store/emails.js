@@ -50,7 +50,7 @@ const defaultEmails = {
     }
   }
 
-   export const sendEmail = (cause, name) => {
+   export const recordEmail = (name, cause) => {
     return function thunk(dispatch) {
         return fetch('http://127.0.0.1:8000/emails/sent/', {
             method: 'POST',

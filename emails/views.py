@@ -89,17 +89,14 @@ class SentListViewSet(viewsets.ModelViewSet):
     SUPPORTED_ACTIONS = ['get', 'post']
 
     def create(self, request, **kwargs):
-        print(request.data)
-        # import pdb; pdb.set_trace()
         cause_id = request.data.get("cause")
         try:
             cause = EmailMetadata.objects.get(pk=cause_id)
-            Sent.objects.create(
-                cause=cause,
-                name=request.data.get("name")
-            )
+            newSent = Sent(name=request.data.get("name", ""))
+            newSent.save()
+            newSent.cause.add(cause)
             resp = response.Response(
-                {"cause": cause_id},
+                {"id": newSent.id, "cause": [cause_id], "created": newSent.created},
                 status=201
             )
             return resp

@@ -74,9 +74,14 @@ export function fetchCauses() {
 export default function reducer(state = defaultCauses, action) {
   switch (action.type) {
     case GET_CAUSES:
+      const causes = action.payload
+      if (!causes) return state
       return {
         ...state,
-        causeList: action.payload || state.causeList
+        causeList: causes.map(cause => ({
+          ...cause,
+          recipient: cause.recipient.map(r => r.email_address),
+        }))
       }
     case GET_CAUSE:
       const cause = action.payload

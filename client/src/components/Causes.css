@@ -121,3 +121,7 @@ header .sortable-column-header > .sort-arrows > .Arrow.is-selected-sort {
 .center {
     text-align: center;
 }
+
+.button.small-1.button-outline.cause-cell {
+    padding: 0;
+}

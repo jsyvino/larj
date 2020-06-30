@@ -3,7 +3,8 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-import { sendEmail } from '../store/emails'
+import { recordEmail } from '../store/emails'
+import { composeEmail } from './utils'
 
 import './Causes.css'
 
@@ -15,9 +16,8 @@ export  class CauseItem extends Component {
     }
 
     handleSubmit = () => {
-        console.log("send that email baby")
-        const { cause, user } = this.props
-        sendEmail(user.name, cause.id)
+        const { cause, user, recordSentEmail } = this.props
+        recordSentEmail(user.name, cause.id)
     }
 
     renderBasicCell = (text, width) => {
@@ -27,13 +27,19 @@ export  class CauseItem extends Component {
     }
 
     render() {
-        const { cause } = this.props
+        const { cause, user } = this.props
+        if (!cause) return null
+        const {toField, subject, fullBody} = composeEmail(cause.recipient, cause.subject, cause.body_text, user)
       return (
           <div className="casues-page">
             <div className="item-container">
-                <div className="small-1" title="Take Action!">
-                    <input className="button-outline cause-cell" type="submit" value="Email" onClick={this.handleSubmit}/>
-                </div>
+                <a className="button small-1 button-outline cause-cell"
+                    title="Take Action!"
+                    onClick={this.handleSubmit}
+                    href={`mailto:${toField}?subject=${subject}&body=${fullBody}`}
+                >
+                    <p>Email</p>
+                </a>
                 {this.renderBasicCell(cause.subject, 2)}
                 {this.renderBasicCell(cause.victim_name || "", 1)}
                 {this.renderBasicCell(cause.state || "", 1)}
@@ -54,7 +60,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         recordSentEmail: (name, cause) => {
-        dispatch(sendEmail(name, cause))
+        dispatch(recordEmail(name, cause))
       },
     }
   }

@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { fetchCauseById } from '../store/causes'
-import { sendEmail } from '../store/emails'
+import { recordEmail } from '../store/emails'
+import { composeEmail } from './utils'
 
 import './CauseDetail.css'
 
@@ -17,23 +18,23 @@ export class CauseDetail extends Component{
     }
 
     handleSubmit = () => {
-      console.log("send that email baby")
-      const { cause, user } = this.props
-      sendEmail(user.name, cause.id)
+      const { causes: {currentCause}, user, recordSentEmail } = this.props
+      recordSentEmail(user.name, currentCause.id)
   }
 
     render() {
-      const cause = this.props.causes.currentCause
-      if (!cause) return null
-      const locationText = this.getLocationText(cause.city, cause.state)
+      const { causes: {currentCause}, user } = this.props
+      if (!currentCause) return null
+      const {toField, subject, fullBody} = composeEmail(currentCause.recipient, currentCause.subject, currentCause.body_text, user)
+      const locationText = this.getLocationText(currentCause.city, currentCause.state)
       return (
         <div className="cause-detail-container">
-          <h1>{`${cause.subject}`}</h1>
+          <h1>{`${currentCause.subject}`}</h1>
           {
-            cause.victim_name &&
+            currentCause.victim_name &&
             <div className="field-item">
               <span className="bold">Victim: </span>
-              <span>{cause.victim_name}</span>
+              <span>{currentCause.victim_name}</span>
             </div>
           }
           {
@@ -44,21 +45,26 @@ export class CauseDetail extends Component{
             </div>
           }
           {
-            cause.description &&
+            currentCause.description &&
             <div className="field-item">
               <span className="bold">Description of Cause: </span>
-              <span>{cause.description}</span>
+              <span>{currentCause.description}</span>
             </div>
           }
           <div title="Send an Email!">
-              <button className="button-primary" onClick={this.handleSubmit}><p className="primary-text">Demand Justice</p></button>
+              <a className="button button-primary"
+                onClick={this.handleSubmit}
+                href={`mailto:${toField}?subject=${subject}&body=${fullBody}`}
+              >
+                <p className="primary-text">Demand Justice</p>
+              </a>
           </div>
           <div className="field-item">
               <span className="bold">PLEASE consider taking action and emailing the relevant decision makers! Click this button to auto-populate your email.  You are encouraged to edit the body of the email to add your specific opinion about the situation, custom emails are always more impactful; however, if time does not allow, sending a templated email is better than nothing at all!  </span>
           </div>
           <div className="field-item">
               <span className="bold">Email Body Template: </span>
-              <span>{cause.body_text}</span>
+              <span>{currentCause.body_text}</span>
           </div>
 
         </div>
@@ -77,6 +83,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
       getCausebyId: (id) => {
         dispatch(fetchCauseById(id))
+      },
+      recordSentEmail: (name, cause) => {
+        dispatch(recordEmail(name, cause))
       },
     }
   }
