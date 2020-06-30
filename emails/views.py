@@ -1,4 +1,5 @@
 from rest_framework import viewsets, serializers, response
+from django.http import HttpResponse
 from django.http import Http404
 from emails.models import EmailMetadata, Sent, EmailAddress
 
@@ -116,3 +117,7 @@ class EmailAddressSerializer(serializers.ModelSerializer):
         fields = (
             'email_address',
         )
+
+
+def index(request):
+    return HttpResponse("she works.")
