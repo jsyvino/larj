@@ -39,6 +39,16 @@ class CauseViewSet(viewsets.ModelViewSet):
 
 
 class CauseListSerializer(serializers.ModelSerializer):
+
+    recipient = serializers.SerializerMethodField()
+
+    def get_recipient(self, email_metadata):
+        recipient_queryset = email_metadata.recipient
+        if recipient_queryset is not None:
+            return EmailAddressSerializer(recipient_queryset, many=True).data
+        else:
+            return []
+
     class Meta:
         model = EmailMetadata
         fields = (
@@ -50,6 +60,7 @@ class CauseListSerializer(serializers.ModelSerializer):
             'victim_name',
             'city',
             'state',
+            'recipient',
         )
         read_only_fields = ('id',)
 
@@ -67,16 +78,19 @@ class SentListSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'cause',
+            'created',
         )
 
 
 class SentListViewSet(viewsets.ModelViewSet):
-    queryset = EmailMetadata.objects.all()
+    queryset = Sent.objects.all()
     serializer_class = SentListSerializer
 
     SUPPORTED_ACTIONS = ['get', 'post']
 
     def create(self, request, **kwargs):
+        print(request.data)
+        # import pdb; pdb.set_trace()
         cause_id = request.data.get("cause")
         try:
             cause = EmailMetadata.objects.get(pk=cause_id)

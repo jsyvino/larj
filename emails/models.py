@@ -29,7 +29,7 @@ class EmailMetadata(models.Model):
 
 
 class Sent(models.Model):
-    cause = models.ForeignKey(EmailMetadata, null=True, on_delete=models.SET_NULL)
+    cause = models.ManyToManyField(EmailMetadata)
     name = models.CharField(max_length=508, null=True)
     created = models.DateTimeField(auto_now_add=True)
 

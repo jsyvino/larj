@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import classnames from 'classnames'
 import { throttle } from 'lodash'
 
@@ -27,7 +28,7 @@ export class Causes extends Component {
         })
     }, 200)
 
-    sortUsers = causes => {
+    sortCauses = causes => {
         const { filterText: f } = this.state
         const { causes: {causeList} } = this.props
         const filteredCauses = f.length ? this.filterCausesBySearch() : causeList
@@ -81,7 +82,7 @@ export class Causes extends Component {
       }
 
       renderCauses() {
-        const { causes: {causeList} } = this.props
+        const { causes: {causeList}} = this.props
 
         return (
           <section className="all-causes">
@@ -96,7 +97,7 @@ export class Causes extends Component {
             </header>
             <ul>
                 {
-                    this.sortUsers(causeList).map(causeItem =>
+                    this.sortCauses(causeList).map(causeItem =>
                     <li key={`causeItem ${causeItem.id}`}>
                         <CauseItem cause={causeItem} />
                     </li>
@@ -108,13 +109,35 @@ export class Causes extends Component {
       }
 
     render() {
-        const { causes: {causeList} } = this.props
+      const { emails: {emailList} } = this.props
+      let max = null
+      if(emailList && emailList.length) {
+        const frequencies = emailList.reduce((resultObj, cause) => {
+          const id = cause.id.toString()
+          if (id in resultObj) resultObj[id]++;
+          else resultObj[id] = 1;
+          return resultObj
+        }, {})
+        for (const causeId in frequencies) {
+          if (!max) max = causeId
+          else if(frequencies[max] < frequencies[causeId]) {
+            max = causeId
+          }
+        }
+      }
+
       return (
           <div className="casues-page">
             <h2>Take Action and Support These Causes</h2>
             <p className="causes-summary">
                 Review the below causes and if any of them resonante with you, TAKE ACTION and send an email demanding justice.  You are encouraged to edit the body of the email to add your specific opinion about the situation, custom emails are always more impactful; however, if time does not allow, sending a templated email is better than nothing at all!
             </p>
+            {
+              max &&
+              <Link to={`/causes/${max}`} className='most-popular'>
+                Most Popular Cause
+              </Link>
+            }
             {this.renderCauses()}
           </div>
       )
@@ -124,8 +147,8 @@ export class Causes extends Component {
 
   const mapStateToProps = (state) => {
     return {
-        user: state.user,
-        causes: state.causes
+        causes: state.causes,
+        emails: state.emails,
     }
 }
 

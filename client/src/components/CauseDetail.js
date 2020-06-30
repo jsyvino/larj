@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { fetchCauseById } from '../store/causes'
+import { sendEmail } from '../store/emails'
+
+import './CauseDetail.css'
 
 export class CauseDetail extends Component{
     componentDidMount() {
@@ -9,8 +12,13 @@ export class CauseDetail extends Component{
     }
 
     render() {
+      console.log(this.props)
+      const cause = this.props.causes.currentCause
       return (
-        <h1>CAUSE DETAIL!!!!!!!!!!!</h1>
+        <div className="cause-detail-container">
+          <h1>CAUSE DETAIL!!!!!!!!!!!</h1>
+
+        </div>
       )
     }
   }
